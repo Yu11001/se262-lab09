@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="styles.css" rel="stylesheet" />
+    <title>Document</title>
+
+</head>
+
+<body>
+    <div id="wrapper">
+        <header>
+
+            <div id="page-banner">
+                <h1 class="title">Bookorama</h1>
+                <p>Books for Ninjas</p>
+                <form id="search-books">
+                    <input type="text" placeholder="Search books.." />
+                </form>
+            </div>
+        </header>
+
+
+        <div id="book-list">
+            <h2 class="title">Books to read</h2>
+
+            <!-- <li>
+                    <span class="id">1</span>
+                    <span class="name">Name of Wind</span>
+                </li>
+                <li>
+                    <span class="id">2</span>
+                    <span class="name">The Wise Man's Fear</span>
+                </li>
+                <li>
+                    <span class="id">3</span>
+                    <span class="name">Kafka on the shroe</span>
+                </li>
+                <li>
+                    <span class="id">4</span>
+                    <span class="name">The Master and Magarita</span>
+                </li> -->
+
+        </div>
+        <form id="add-book">
+            <input type="text" id="bookName" name="bookName" placeholder="Book name.." />
+            <button>Add</button>
+        </form>
+
+    </div>
+    <script>
+        const bookList = document.getElementById('book-list');
+        const searchInput = document.querySelector('#search-books input');
+
+        const filterBooks = () => {
+            const searchTerm = searchInput.value.toLowerCase();
+            const books = bookList.querySelectorAll('li');
+
+            books.forEach(book => {
+                const name = book.querySelector('.name').textContent.toLowerCase();
+                if (name.includes(searchTerm)) {
+                    book.style.display = 'block';
+                } else {
+                    book.style.display = 'none';
+                }
+            });
+        };
+        searchInput.addEventListener('input', filterBooks);
+        console.log(bookList)
+        fetch('/books')
+            .then(response => response.json())
+            .then(books => {
+                bookList.innerHTML = ''; // Clear existing book list
+                books.forEach(book => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `
+                        <span class="id">${book.bookNo}</span>
+                        <span class="name">${book.bookName}</span>
+                    `;
+                    bookList.appendChild(li);
+                });
+            })
+            .catch(error => console.error('Error fetching books:', error));
+    </script>
+</body>
+
+</html>
